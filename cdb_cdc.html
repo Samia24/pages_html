@@ -69,7 +69,7 @@
             font-size: 1.2rem;
         }
 
-        h2{
+        h2, #resultado{
             color:rgb(153, 255, 58);
         }
     </style>
@@ -107,7 +107,7 @@
         </div>
 
     </form>
-    
+
     <h2>**** RESULTADO DA SIMULAÇÃO ****</h2>
         <p id="resultado"></p>
 
@@ -137,20 +137,25 @@
             const rendimento_cdc = (juros_cdc / valor_emprestado) * 100
             const parcela = valor_a_pagar / prazo_meses
 
+            //Lucros do banco
+            const lucro_banco = juros_cdc - juros_cdb
+
             const resultado = `\n>>>>>>>>>> RESULTADO CDB <<<<<<<<<<
                     \n---> Valor investido inicialmente no CDB : R$ ${valor_investido.toFixed(2)}.
                     \n---> Valor total investido no CDB somado aos juros obtidos: R$ ${valor_a_sacar.toFixed(2)}.
                     \n---> Juros do CDB: R$ ${juros_cdb.toFixed(2)}.
                     \n---> Rendimento do investimento (%): ${rendimento_cdb.toFixed(1)}%.
-                    \n-----------------------------`
-                `\n>>>>>>>>>> RESULTADO CDC <<<<<<<<<<
+                    \n-----------------------------
+                    \n>>>>>>>>>> RESULTADO CDC <<<<<<<<<<
                     \n---> Valor do empréstimo inicial no CDC : R$ ${valor_emprestado.toFixed(2)}.
                     \n---> Valor total emprestado no CDC somado aos juros : R$ ${valor_a_pagar.toFixed(2)}.
                     \n---> Juros do CDC : R$ ${juros_cdc.toFixed(2)}.
                     \n---> Rendimento do empréstimo (%) : ${rendimento_cdc.toFixed(1)}%.
                     \n---> Valor das parcelas : ${prazo_meses.toFixed(0)} x R$ ${parcela.toFixed(2)}.
-                    --------------------------------------------`
-            //alert(resultado)
+                    \n--------------------------------------------
+                    \n>>>>>>>>>> LUCROS DO BANCO <<<<<<<<<<
+                    \n---> Lucro do banco: R$ ${lucro_banco.toFixed(2)}.\n`
+
             const elemento_resultado = document.getElementById('resultado')
             elemento_resultado.innerText = resultado
 
