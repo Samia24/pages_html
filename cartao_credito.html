@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cartao_credito_rotativo</title>
+    <style>
+        body{
+            background-color:rgb(19, 40, 43);
+        }
+
+        img{
+            width: 220px;
+        }
+
+        h1{
+            color:rgb(255, 178, 228);
+            margin: 10px;
+            font-size: 1.5rem;
+            font-family: cursive;
+            width: 40%;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid rgb(153, 255, 58);
+        }
+
+        #botoes{
+            flex-direction: row;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        #botoes input{
+            min-width: 200px;
+            color: rgb(19, 40, 43);
+            flex: 1;
+            height: 35px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            background-color:rgb(235, 162, 210);
+        }
+
+        input{
+            background-color: rgb(19, 40, 43);
+            color: white;
+            border-bottom: 2px solid rgb(255, 178, 228);
+            border-right: 2px solid rgb(255, 178, 228);
+            border-top: rgb(19, 40, 43);
+            font-size: 0.9rem;
+        }
+
+        header{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            
+        }
+
+        div{
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.6rem;
+        }
+
+        label{
+            color:rgb(153, 255, 58);
+            font-size: 1.2rem;
+        }
+
+        h2, #resultado{
+            color:rgb(153, 255, 58);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="imagens/cartao.png" alt="Cartão de Crédito Rotativo">
+        <h1>Cartão de Crédito Rotativo</h1>
+    </header>
+    <form id="formulario" action="#">
+        <div>
+            <label for="">Valor da Fatura</label>
+            <input id="valor_fatura" type="number" step="0.01" placeholder="Valor fatura R$">
+        </div>
+
+        <div>
+            <label for=""> -------- Plano 1 -------- </label>
+        </div>
+
+        <div>
+            <label for="">Valor pago</label>
+            <input id="valor_pago1"  type="number" step="0.01" placeholder="Valor pago R$">
+        </div>
+
+        <div>
+            <label for="">Quantidade de meses em atraso</label>
+            <input id="meses_em_atraso1"  type="number" placeholder="Informe a qtd de meses">
+        </div>
+
+        <div>
+            <label for=""> -------- Plano 2 -------- </label>
+        </div>
+       
+        <div>
+            <label for="">Valor pago</label>
+            <input id="valor_pago2"  type="number" step="0.01" placeholder="Valor pago R$">
+        </div>
+
+        <div>
+            <label for="">Quantidade de meses em atraso</label>
+            <input id="meses_em_atraso2"  type="number" placeholder="Informe a qtd de meses">
+        </div>
+
+        <div id="botoes">
+            <input id="btn-calcular" onclick="clique_botao_calcular()" type="submit" value="Calcular">
+            <input type="reset" value="Limpar">
+        
+        </div>
+
+    </form>
+
+    <h2>**** RESULTADO DA SIMULAÇÃO DE PAGAMENTO ****</h2>
+        <p id="resultado"></p>
+
+    <script>
+        function clique_botao_calcular(){
+            //Pedir dados
+            const valor_fatura = obter_numero('valor_fatura')
+            const taxa_rotativo = obter_numero('taxa_rotativo')
+            
+            //Entrada de dados do Plano 1
+            const valor_pago1 = obter_numero('valor_pago1')
+            const meses_em_atraso1 = obter_numero('meses_em_atraso1')
+            
+            //Calcula os dados para Plano 1
+            const capital_1 = (valor_fatura - valor_pago1)
+            const montante_1 = calcular_juros_compostos(capital_1, taxa_rotativo, meses_em_atraso1)
+            const juros_1 = montante_1 - capital_1
+            const valor_total_1 = capital_1 + juros_1
+
+            //Entrada de dados do Plano 2
+            const valor_pago2 = obter_numero('valor_pago2')
+            const meses_em_atraso2 = obter_numero('meses_em_atraso2')
+
+            //Calcula os dados para Plano 2
+            const capital_2 = (valor_fatura - valor_pago2)
+            const montante_2 = calcular_juros_compostos(capital_2, taxa_rotativo, meses_em_atraso2)
+            const juros_2 = montante_2 - capital_2
+            const valor_total_2 = capital_2 + juros_2
+    
+            //Resultado
+            const resultado = `\n>>>>> RESULTADO PLANO 1 <<<<<
+                    \nValor da fatura            : R$ ${valor_fatura.toFixed(2)}.
+                    \nValor pago                 : R$ ${valor_pago1.toFixed(2)}.
+                    \nMeses em atraso            : ${meses_em_atraso1} meses.
+                    \nJuros sob o débito pendente: R$ ${juros_1.toFixed(2)}.
+                    \nSaldo devedor (sem juros)  : R$ ${capital_1.toFixed(2)}.
+                    \n---> Fatura em ${meses_em_atraso1} meses será de R$ ${valor_total_1.toFixed(2)}.
+                    \n-----------------------------
+                    \n>>>>> RESULTADO PLANO 2 <<<<<
+                    \nValor da fatura            : R$ ${valor_fatura.toFixed(2)}.
+                    \nValor pago                 : R$ ${valor_pago2.toFixed(2)}.
+                    \nMeses em atraso            : ${meses_em_atraso2} meses.
+                    \nJuros sob o débito pendente: R$ ${juros_2.toFixed(2)}.
+                    \nSaldo devedor (sem juros)  : R$ ${capital_2.toFixed(2)}.
+                    \n---> Fatura em ${meses_em_atraso2} meses será de R$ ${valor_total_2.toFixed(2)}.`
+
+            const elemento_resultado = document.getElementById('resultado')
+            elemento_resultado.innerText = resultado
+
+        }
+
+        function calcular_juros_compostos(capital, taxa, tempo){
+            return capital * ((1 + (taxa/100)) ** tempo)
+        }
+        
+        function obter_valor(elemento_id){
+            const elemento = document.getElementById(elemento_id)
+            const valor = elemento.value
+            return valor
+        }
+
+        function obter_numero(elemento_id){
+            return Number(obter_valor(elemento_id))
+        }
+        
+    </script>
+</body>
+</html>
